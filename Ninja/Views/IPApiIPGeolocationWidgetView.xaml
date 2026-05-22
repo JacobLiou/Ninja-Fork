@@ -1,0 +1,438 @@
+﻿<UserControl
+    x:Class="Ninja.Views.IPApiIPGeolocationWidgetView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Ninja.Converters;assembly=Ninja.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:loadingIndicators="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF"
+    xmlns:localization="clr-namespace:Ninja.Localization.Resources;assembly=Ninja.Localization"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:settings="clr-namespace:Ninja.Settings;assembly=Ninja.Settings"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:viewModels="clr-namespace:Ninja.ViewModels"
+    MinHeight="200"
+    d:DataContext="{d:DesignInstance viewModels:IPApiIPGeolocationWidgetViewModel}"
+    Loaded="UserControl_Loaded"
+    mc:Ignorable="d">
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="F5"
+            Command="{Binding CheckViaHotkeyCommand}" />
+    </UserControl.InputBindings>
+    <UserControl.Resources>
+        <converters:BooleanReverseToVisibilityCollapsedConverter x:Key="BooleanReverseToVisibilityCollapsedConverter" />
+        <converters:BooleanToStringConverter x:Key="BooleanToStringConverter" />
+        <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+        <converters:BooleanToVisibilityHiddenConverter x:Key="BooleanToVisibilityHiddenConverter" />
+        <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
+        <converters:IntNotZeroToVisibilityCollapsedConverter x:Key="IntNotZeroToVisibilityCollapsedConverter" />
+        <converters:IntToStringConverter x:Key="IntToStringConverter" />
+        <converters:IntZeroToVisibilityCollapsedConverter x:Key="IntZeroToVisibilityCollapsedConverter" />
+        <converters:StringNullOrEmptyToStringConverter x:Key="StringNullOrEmptyToStringConverter" />
+    </UserControl.Resources>
+    <Border
+        BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
+        BorderThickness="1">
+        <Grid Margin="10">
+            <Grid.Resources>
+                <Style
+                    BasedOn="{StaticResource CenterTextBlock}"
+                    TargetType="{x:Type TextBlock}" />
+                <Style
+                    BasedOn="{StaticResource TextBlockAsTextBox}"
+                    TargetType="{x:Type TextBox}">
+                    <Setter Property="ContextMenu" Value="{StaticResource CopyContextMenu}" />
+                    <Setter Property="TextWrapping" Value="NoWrap" />
+                </Style>
+            </Grid.Resources>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Grid.Row="0"
+                    Margin="10"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+                    <Rectangle
+                        Width="32"
+                        Height="32"
+                        Fill="{DynamicResource MahApps.Brushes.Gray3}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush
+                                Stretch="Uniform"
+                                Visual="{iconPacks:Material Kind=MapMarkerOutline}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        Style="{StaticResource MessageTextBlock}"
+                        Text="{x:Static localization:Strings.IPGeolocation}" />
+                </StackPanel>
+                <Grid
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="10"
+                    Visibility="{Binding Source={x:Static Member=settings:SettingsManager.Current}, Path=Dashboard_CheckIPApiIPGeolocation, Converter={StaticResource ResourceKey=BooleanToVisibilityCollapsedConverter}}">
+                    <!--  Result  -->
+                    <Grid
+                        Grid.Row="0"
+                        Grid.Column="0">
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsRunning}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding Result.RateLimitIsReached}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding Result.HasError}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,0,10"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                Text="{x:Static localization:Strings.Location}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Continent}" />
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="2">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="Result.Info.Continent" />
+                                        <Binding Path="Result.Info.ContinentCode" />
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Country}" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="2">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="Result.Info.Country" />
+                                        <Binding Path="Result.Info.CountryCode" />
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Region}" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="2">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="Result.Info.RegionName" />
+                                        <Binding Path="Result.Info.Region" />
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.City}" />
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.City, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.District}" />
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.District, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.ZipCode}" />
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Zip, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Latitude}" />
+                            <TextBox
+                                Grid.Row="7"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Lat, Converter={StaticResource DoubleToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Longitude}" />
+                            <TextBox
+                                Grid.Row="8"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Lon, Converter={StaticResource DoubleToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Timezone}" />
+                            <TextBox
+                                Grid.Row="9"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Timezone, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="10"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Offset}" />
+                            <TextBox
+                                Grid.Row="10"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Offset, Converter={StaticResource IntToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="11"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Currency}" />
+                            <TextBox
+                                Grid.Row="11"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Currency, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                        </Grid>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,0,10"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                Text="{x:Static localization:Strings.Network}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.IPAddress}" />
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Query, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.PTRRecord}" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Reverse, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.ISP}" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Isp, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Organization}" />
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Org, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.ASN}" />
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.As, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.AsName}" />
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Asname, Converter={StaticResource StringNullOrEmptyToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Hosting}" />
+                            <TextBox
+                                Grid.Row="7"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Hosting, Converter={StaticResource BooleanToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Proxy}" />
+                            <TextBox
+                                Grid.Row="8"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Proxy, Converter={StaticResource BooleanToStringConverter}}" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Text="{x:Static localization:Strings.Mobile}" />
+                            <TextBox
+                                Grid.Row="9"
+                                Grid.Column="2"
+                                Text="{Binding Result.Info.Mobile, Converter={StaticResource BooleanToStringConverter}}" />
+                        </Grid>
+                    </Grid>
+                    <!--  Rate limit  -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsRunning}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding Result.RateLimitIsReached}"
+                                        Value="False">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock
+                            Style="{StaticResource MessageTextBlock}"
+                            Text="{x:Static localization:Strings.IPApiRateLimitMessage}" />
+                    </StackPanel>
+                    <!--  Error message  -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsRunning}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding Result.HasError}"
+                                        Value="False">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            Style="{StaticResource MessageTextBlock}"
+                            Text="{Binding Result.ErrorMessage}"
+                            Visibility="{Binding Result.ErrorCode, Converter={StaticResource IntZeroToVisibilityCollapsedConverter}}" />
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            Style="{StaticResource MessageTextBlock}"
+                            Visibility="{Binding Result.ErrorCode, Converter={StaticResource IntNotZeroToVisibilityCollapsedConverter}}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}{3}{2}">
+                                    <Binding Source="{x:Static localization:Strings.HttpStatusCode}" />
+                                    <Binding Path="Result.ErrorCode" />
+                                    <Binding Path="Result.ErrorMessage" />
+                                    <Binding Source="{x:Static system:Environment.NewLine}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <TextBlock
+                            Style="{StaticResource MessageTextBlock}"
+                            Text="{x:Static localization:Strings.CheckNetworkConnectionTryAgainMessage}" />
+                    </StackPanel>
+                    <!--  Loading indicator  -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}">
+                        <loadingIndicators:LoadingIndicator
+                            Margin="0,0,0,10"
+                            IsActive="True"
+                            SpeedRatio="1"
+                            Style="{DynamicResource LoadingIndicatorArcsStyle}" />
+                        <TextBlock
+                            Style="{StaticResource MessageTextBlock}"
+                            Text="{x:Static localization:Strings.CheckingIPGeolocationDots}" />
+                    </StackPanel>
+                </Grid>
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource MessageTextBlock}"
+                    Text="{x:Static localization:Strings.CheckIsDisabled}"
+                    Visibility="{Binding Source={x:Static Member=settings:SettingsManager.Current}, Path=Dashboard_CheckIPApiIPGeolocation, Converter={StaticResource ResourceKey=BooleanReverseToVisibilityCollapsedConverter}}" />
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>
